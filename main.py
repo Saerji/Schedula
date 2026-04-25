@@ -147,7 +147,7 @@ def search_schedule(schedules):
 
 def display_schedule(schedules):
     if not schedules:
-        print("There is no existing scheules found. Please add schedules in the Add Schedules menu.")
+        print("There is no existing schedules found. Please add schedules in the Add Schedules menu.")
     else:
         print("All existing schedules:")
         for key1, value1 in schedules.items():
