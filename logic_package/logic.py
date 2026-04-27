@@ -77,5 +77,5 @@ def delete_schedule(schedules, code, num):
     save_schedules(schedules)
     return "deleted" 
 
-
-schedules = load_schedules()
+if __name__ == "__main__":
+    schedules = load_schedules()
