@@ -7,10 +7,9 @@ def load_schedules():
             return json.load(file)
     return {}
 
-def save_schedules():
+def save_schedules(schedules):
     with open("schedules.json", "w") as file:
         json.dump(schedules, file, indent = 4)
-    print("Schedules saved!")
     
 def add_schedule(schedules, course_title, schedule_day, schedule_time, schedule_room, course_code):   
     entry = {
@@ -46,7 +45,7 @@ def search_room (schedules, search_room):
     results = []
     for code, entries in schedules.items():
         for entry in entries:
-            if search_room == entry["Room"]:
+            if search_room == entry["Room"].upper():
                 results.append({"code" : code, **entry})
     return results        
 
