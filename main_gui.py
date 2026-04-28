@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
+from CTkTable import CTkTable
 import logic_package
 
 ctk.set_appearance_mode("light")
@@ -29,8 +30,8 @@ ctk.CTkFrame(sidebar, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady
 
 sidebar_nav = [
     ("Add Schedule", "add"),
-    ("Search Schedule/s", "search"),
     ("View Schedules", "view"),
+    ("Search Schedule/s", "search"),
     ("Update Schedule", "update"),
     ("Delete Schedule", "delete")
 ]
@@ -227,23 +228,70 @@ def show_add_schedule():
                   fg_color="#6F8F62",
                   hover_color="#4E7A57",
                   text_color="#F8F4EC",
-                  width=300,
-                  height=45,
+                  width=3000,
+                  height=50,
                   corner_radius=6,
                   command=submit).pack(anchor="w", padx=20, pady=20)
 
+def show_view_schedules():
+    LABEL_WIDTH = 150
+    PADY = 5
+    ctk.CTkLabel(content_frame,
+                 text="View Schedules",
+                 font=("Georgia", 24, "bold"),
+                 text_color="#344E41").pack(padx=20, pady=20)
+    ctk.CTkFrame(content_frame, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=10) #divider
+    
+    data = logic_package.display_schedule(logic_package.schedules)
+    
+    if not data:
+        ctk.CTkLabel(content_frame,
+                 text='No schedules found. Add one in the "Add Schedules" section. :) ',
+                 font=("Georgia", 24, "bold"),
+                 text_color="#344E41").pack(padx=20, pady=20)
+        
+        return
+    
+    table_data = [["Course Code", "Course Title", "Day", "Time", "Room"]]
+    
+    for code, entries in data.items():
+        first = True
+        for entry in entries:
+            if first:
+                table_data.append([
+                    code,
+                    entry["Title"],
+                    entry["Day"],
+                    entry["Time"],
+                    entry["Room"]
+                ])
+                first = False
+                
+            else:
+                table_data.append([
+                "",
+                entry["Title"],
+                entry["Day"],
+                entry["Time"],
+                entry["Room"]
+            ])
+            
+    schedules_table = CTkTable(content_frame,
+                               row=len(table_data),
+                               column=5,
+                               values=table_data,
+                               header_color="#6B8F5E",
+                               colors=["#A8B89A", "#A8B89A"],
+                               hover_color="#EEF2EA",
+                               font = ("Georgia", 13)
+                              )
+    schedules_table.pack(fill="both", expand=True, padx=20, pady=10)
+    
 def show_search_schedule():
     ctk.CTkLabel(content_frame,
                  text="Search",
                  font=("Arial", 20, "bold")
                  ).pack()
-
-def show_view_schedules():
-    ctk.CTkLabel(content_frame,
-                 text="View",
-                 font=("Arial", 20, "bold")
-                 ).pack()
-
 def show_update_schedule():
     ctk.CTkLabel(content_frame,
                  text="update Sched",
@@ -262,10 +310,10 @@ def switch_view(view_name):
         
     if view_name == "add":
         show_add_schedule()
-    elif view_name == "search":
-        show_search_schedule()
     elif view_name == "view":
         show_view_schedules()
+    elif view_name == "search":
+        show_search_schedule()
     elif view_name == "update":
         show_update_schedule()
     elif view_name == "delete":
