@@ -485,10 +485,180 @@ def show_search_schedule():
 
         
 def show_update_schedule():
+    LABEL_WIDTH = 180
+    PADY = 5
     ctk.CTkLabel(content_frame,
-                 text="update Sched",
-                 font=("Arial", 20, "bold")
-                 ).pack()
+                 text="Update Schedule",
+                 font=("Georgia", 24, "bold"),
+                 text_color="#344E41").pack(padx=20, pady=20)
+    ctk.CTkFrame(content_frame, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=10) #divider
+
+    def on_click(cell):
+        if cell["row"] == 0:
+            messagebox.showwarning("Warning", "Header cannot be edited!", parent=root)
+            return
+        if cell["column"] == 0:
+            messagebox.showwarning("Warning", "Course code cannot be edited here!", parent=root)
+            return
+        
+        popup = ctk.CTkToplevel(root)
+        popup.title("Edit Cell")
+        popup.geometry("400x200")
+        popup.grab_set()
+        
+        column_names = ["Course Code", "Course Title", "Day", "Time", "Room"]
+        clicked_column = column_names[cell["column"]]
+        ctk.CTkLabel(popup,
+                    text=f"Editing: {clicked_column}",
+                    font=("Georgia", 14, "bold"),
+                    text_color="#344E41").pack(padx=20, pady=(20, 5))
+        ctk.CTkFrame(popup, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=10) #divider
+
+        if clicked_column == "Course Title" or clicked_column == "Room":
+            edit_var = ctk.StringVar(value=cell["value"])
+            ctk.CTkEntry(popup,
+                        textvariable=edit_var,
+                        font=("Georgia", 13),
+                        width=300,
+                        height=40).pack(padx=20, pady=10)
+        elif clicked_column == "Day":
+            edit_var = ctk.StringVar(value=cell["value"])
+            ctk.CTkOptionMenu(popup,
+                            values=["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                                    "Friday", "Saturday"],
+                            variable=edit_var,
+                            width=350,
+                            height=50,
+                            fg_color="#A8B89A",
+                            button_color="#6F8F62",
+                            button_hover_color="#4E7A57",
+                            text_color="#244032",
+                            dropdown_fg_color="#F8F5F0",
+                            dropdown_text_color="#244032",
+                            dropdown_hover_color="#DDE5D8").pack()
+        else:
+            timeupdate_frame = ctk.CTkFrame(popup, fg_color="transparent")
+            timeupdate_frame.pack()
+            hour_values = [f"{h:02d}" for h in range(1, 24)]
+            edit_var_hour = ctk.StringVar(value=cell["value"][:-5])
+            edit_var_min = ctk.StringVar(value=cell["value"][5:])
+            ctk.CTkOptionMenu(timeupdate_frame,
+                            values=hour_values,
+                            variable=edit_var_hour,
+                            width=100,
+                            height=50,
+                            fg_color="#A8B89A",
+                            button_color="#6F8F62",
+                            button_hover_color="#4E7A57",
+                            text_color="#244032",
+                            dropdown_fg_color="#F8F5F0",
+                            dropdown_text_color="#244032",
+                            dropdown_hover_color="#DDE5D8").pack(side="left")
+            ctk.CTkLabel(timeupdate_frame,
+                        text=":",
+                        font=("Georgia", 14),
+                        justify="left",
+                        width=50,
+                        text_color="#344E41").pack(side="left", padx=(0, 5), pady=5)
+            minute_values = [f"{m:02d}" for m in range(60)]
+            ctk.CTkOptionMenu(timeupdate_frame,
+                            values=minute_values,
+                            variable=edit_var_min,
+                            width=100,
+                            height=50,
+                            fg_color="#A8B89A",
+                            button_color="#6F8F62",
+                            button_hover_color="#4E7A57",
+                            text_color="#244032",
+                            dropdown_fg_color="#F8F5F0",
+                            dropdown_text_color="#244032",
+                            dropdown_hover_color="#DDE5D8").pack(side="left")
+            
+        def confirm():
+            if clicked_column == "Time":
+                new_value = f"{edit_var_hour.get()} : {edit_var_min.get()}"
+            else:
+                new_value = edit_var.get().strip()
+            
+            if not new_value:
+                messagebox.showwarning("Error", "Field can not be empty!", parent=popup)
+                return
+            
+            row_data = table_data[cell["row"]]
+            code = row_data[0]
+            num = None
+            for i, entry in enumerate(logic_package.schedules[code]):
+                if (entry["Title"] == row_data[1] and
+                    entry["Day"]   == row_data[2] and
+                    entry["Time"]  == row_data[3] and
+                    entry["Room"]  == row_data[4]):
+                    num = i + 1
+                    break
+                
+            if num is None:
+                messagebox.showerror("Error", "Schedule not found!", parent=popup)
+                return
+            
+            title = new_value if clicked_column == "Course Title" else row_data[1]
+            day   = new_value if clicked_column == "Day"          else row_data[2]
+            time  = new_value if clicked_column == "Time"         else row_data[3]
+            room  = new_value if clicked_column == "Room"         else row_data[4]
+        
+            logic_package.update_schedule(logic_package.schedules, code, num, title, day, time, room)
+            
+            messagebox.showinfo("Success", "Schedule updated successfully!", parent=popup)
+            popup.destroy()
+
+            switch_view("update")
+            
+        #----------------------Button---------------------------------------
+        btn_frame = ctk.CTkFrame(popup, fg_color = "transparent")
+        btn_frame.pack(pady=15) 
+        
+        ctk.CTkButton(btn_frame,
+                text="Confirm",
+                font=("Georgia", 15, "bold"),
+                fg_color="#6F8F62",
+                hover_color="#4E7A57",
+                text_color="#F8F4EC",
+                width=30,
+                height=50,
+                corner_radius=6,
+                command=confirm).pack(side="left")
+        
+        ctk.CTkButton(btn_frame,
+                text="Cancel",
+                font=("Georgia", 15, "bold"),
+                fg_color="#6F8F62",
+                hover_color="#4E7A57",
+                text_color="#F8F4EC",
+                width=30,
+                height=50,
+                corner_radius=6,
+                command=popup.destroy).pack(side="left", padx=10)
+            
+            
+    update_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
+    update_frame.pack(fill="both", expand=True, padx=15, pady=10)
+    
+    data = logic_package.display_schedule(logic_package.schedules)
+    table_data = [["Course Code", "Course Title", "Day", "Time", "Room"]]
+    for code, entries in data.items():
+        for entry in entries:
+            table_data.append([code,
+                               entry["Title"],
+                               entry["Day"],
+                               entry["Time"],
+                               entry["Room"]])
+    CTkTable(update_frame,
+             row=len(table_data),
+             values=table_data,
+             header_color="#6B8F5E",
+            colors=["#A8B89A", "#A8B89A"],
+            hover_color="#EEF2EA",
+            font = ("Georgia", 13),
+            command=on_click).pack(fill="both", expand=True, padx=20, pady=10)
+        
     
 def show_delete_schedule():
     ctk.CTkLabel(content_frame,
