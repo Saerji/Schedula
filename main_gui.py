@@ -2,12 +2,14 @@ import customtkinter as ctk
 from tkinter import messagebox
 from CTkTable import CTkTable
 import logic_package
+import datetime
+from PIL import Image
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("green")
 
 root = ctk.CTk()
-root.geometry("1100x600")
+root.geometry("1100x650")
 root.configure(fg_color = "#F8F4EC")
 
 sidebar = ctk.CTkFrame(root, fg_color="#A8B89A", width=220)
@@ -21,12 +23,22 @@ logo_frame = ctk.CTkFrame(sidebar, fg_color="#6F8F62", corner_radius=0, height=1
 logo_frame.pack(fill="x")
 logo_frame.pack_propagate(False)
 
-ctk.CTkLabel(logo_frame, text="🎓  BSU",
+logo_image = Image.open("logo_white.png")
+ctk_image = ctk.CTkImage(light_image=logo_image,
+                           dark_image=logo_image,
+                           size=(60, 60))
+
+ctk.CTkLabel(logo_frame,
+             image=ctk_image,
+             text="Schedula",
+             compound="left",
              font=ctk.CTkFont("Georgia", 20, "bold"),
              text_color="#F8F4EC").pack(expand=True)
 
-ctk.CTkLabel(sidebar, text="Welcome!", font=("Arial",20,"bold")).pack(pady=10)
-ctk.CTkFrame(sidebar, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=8) #divider
+ctk.CTkLabel(sidebar, text="Welcome, User!",
+             font=("Georgia",20,"bold"),
+             text_color="#25482F").pack(pady=20)
+ctk.CTkFrame(sidebar, fg_color="#7A8B76", height=1).pack(fill="x", pady=8) #divider
 
 sidebar_nav = [
     ("Add Schedule", "add"),
@@ -39,42 +51,94 @@ sidebar_nav = [
 for i, view in sidebar_nav:
     btn = ctk.CTkButton (sidebar,
                          text = f"{i}",
-                         font = ("Georgia", 17, "bold"),
+                         font = ("Georgia", 14, "bold"),
                          fg_color="transparent",
-                         text_color="#F4F1E8",
-                         hover_color="#2F4F3E",
+                         text_color="#25482F",
+                         hover_color="#D2E0A4",
                          corner_radius=3,
-                         height=55,
+                         height=50,
                          command=lambda v=view : switch_view(v))
-    btn.pack(fill="x", pady=10, padx=0)
+    btn.pack(fill="x", pady=5, padx=0)
     
 exit_btn = ctk.CTkButton (sidebar,
                           text="Exit",
-                          font = ("Georgia", 15, "bold"),
+                          font = ("Georgia", 12, "bold"),
                           fg_color="transparent",
-                          text_color="#F4F1E8",
-                          hover_color="#2F4F3E",
-                          command=None)
-exit_btn.pack(pady=21, fill='x')
+                          text_color="#25482F",
+                          hover_color="#D2E0A4",
+                          height=50,
+                          command=root.destroy)
+exit_btn.pack(pady=5, fill='x')
+
+clock_label = ctk.CTkLabel(sidebar,
+                     text="",
+                     font=("Georgia", 15),
+                     text_color="#2F4F3E")
+clock_label.pack(padx=5,pady=20)
+
+def update_clock():
+    now = datetime.datetime.now()
+    formatted = now.strftime("%a, %b. %d\n%I:%M:%S %p")
+    clock_label.configure(text=formatted)
+    root.after(1000, update_clock)
+    
+update_clock()
 
 title_bar = ctk.CTkFrame (main_area,
                           fg_color="transparent", 
                           width=220, 
                           height=100,
                           corner_radius=0)
-title_bar.propagate(False)
+title_bar.propagate(True)
 title_bar.pack(fill="x",side="top")
 
 title = ctk.CTkLabel(title_bar,
-                     text="INTEGRATED ACADEMIC SCHEDULE\nAND CLASSROOM RETRIEVAL SYSTEM",
+                     text="SCHEDULA: THE INTEGRATED ACADEMIC SCHEDULE\nAND CLASSROOM INFORMATION RETRIEVAL SYSTEM",
                      font=("Georgia", 28, "bold"),
                      text_color="#2F4F3E",
                      justify="left",
                      anchor="w")
-title.pack(padx=5,pady=0, side="left")
+title.pack(padx=15,pady=(20,0), side="left")
+title_line = ctk.CTkFrame
 
 content_frame = ctk.CTkFrame(main_area, fg_color="#F8F4EC", corner_radius=0)
 content_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+ctk.CTkLabel(content_frame,
+            text="Welcome!",
+            font=("Georgia", 24, "bold"),
+            text_color="#344E41").pack(padx=20, pady=(20, 10))
+ctk.CTkFrame(content_frame, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=10) #divider
+welcome_text = """Welcome to Schedula! The Integrated Academic Schedule and Classroom Information Retrieval System!
+
+Schedula is developed in order to assist academic personalities such as students or instructors to construct a schedules system to provide visual information about their schedules.
+
+With Schedula, you can:
+  ✦  Add new academic schedules with complete course details
+  ✦  View all existing schedules in a clear and organized manner
+  ✦  Search for existing schedules by course code, title, day, time, or room
+  ✦  Update outdated or incorrect schedule information
+  ✦  Delete schedules that are no longer needed
+
+To get started, simply select an option from the sidebar on the left and the system will guide you from there. All data is automatically saved and will be available the next time you open the system.
+
+I hope this system makes your academic experience more organized, aesthetic, efficient, and stress-free!
+
+Developed by: Sergie Alexis S. Maldonado
+Course: CC 102 – Advanced Computer Programming
+Batangas State University"""
+
+textbox = ctk.CTkTextbox(content_frame,
+                          font=("Georgia", 15),
+                          text_color="#344E41",
+                          fg_color="transparent",
+                          wrap="word",
+                          height=400,
+                          border_width=0)
+textbox.pack(padx=20, pady=(20, 10), fill="both", expand=True)
+textbox.insert("1.0", welcome_text)
+textbox.configure(state="disabled")
+
 
 
 
@@ -678,7 +742,7 @@ def show_delete_schedule():
     ctk.CTkLabel(content_frame,
                  text="Click the schedule you would want to delete:",
                  font=("Georgia", 14, "bold"),
-                 text_color="#344E41").pack(anchor="w", padx=20, pady=10)
+                 text_color="#344E41").pack(anchor="w", padx=20, pady=(10,20))
     
     data = logic_package.display_schedule(logic_package.schedules)
     
