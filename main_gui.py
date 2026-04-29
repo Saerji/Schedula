@@ -480,10 +480,6 @@ def show_search_schedule():
     cat_entry.pack(side="left")
     change_searchbox(cat_entry.get())
     
-    
-                    
-
-        
 def show_update_schedule():
     LABEL_WIDTH = 180
     PADY = 5
@@ -492,7 +488,11 @@ def show_update_schedule():
                  font=("Georgia", 24, "bold"),
                  text_color="#344E41").pack(padx=20, pady=20)
     ctk.CTkFrame(content_frame, fg_color="#7A8B76", height=1).pack(fill="x", padx=15, pady=10) #divider
-
+    ctk.CTkLabel(content_frame,
+                 text="Click the schedule you would want to update:",
+                 font=("Georgia", 14, "bold"),
+                 text_color="#344E41").pack(anchor="w", padx=20, pady=10)
+    
     def on_click(cell):
         if cell["row"] == 0:
             messagebox.showwarning("Warning", "Header cannot be edited!", parent=root)
@@ -657,9 +657,8 @@ def show_update_schedule():
             colors=["#A8B89A", "#A8B89A"],
             hover_color="#EEF2EA",
             font = ("Georgia", 13),
-            command=on_click).pack(fill="both", expand=True, padx=20, pady=10)
-        
-    
+            command=on_click).pack(fill="both", expand=True, padx=20, pady=10)    
+                    
 def show_delete_schedule():
     ctk.CTkLabel(content_frame,
                  text="delete sched",
@@ -681,6 +680,4 @@ def switch_view(view_name):
     elif view_name == "delete":
         show_delete_schedule()
         
-        
 root.mainloop()
-    
