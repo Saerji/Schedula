@@ -27,11 +27,15 @@ def add_schedule(schedules, course_code, course_title, schedule_day, schedule_ti
     save_schedules(schedules)
 
     #-----------------------------------SEARCH BY COURSE CODE-------------------------------------------
-def search_code(schedules, search_code): 
-        if search_code in schedules:
-            return schedules[search_code]
-        return None
-    
+def search_code(schedules, search_code):
+    results = []
+    for code, entries in schedules.items():
+        if search_code in code:
+            # "in" checks if the query is ANYWHERE in the code
+            # so "CS" would match "CS 102"
+            for entry in entries:
+                results.append({"code": code, **entry})
+    return results
     #------------------------------------SEARCH BY TIME-------------------------------------------------
 def search_time (schedules, search_time): 
     results = []
