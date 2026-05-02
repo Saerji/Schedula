@@ -9,6 +9,7 @@ ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("green")
 
 root = ctk.CTk()
+root.title("Schedula")
 root.geometry("1100x650")
 root.configure(fg_color = "#F8F4EC")
 
