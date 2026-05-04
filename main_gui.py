@@ -15,7 +15,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from CTkTable import CTkTable #installable library for tables used by Custom TKinter
 import logic_package #import logic file (modular programming)
-import datetime
+import datetime #installable library for live time and day monitoring UI design
 from PIL import Image #installable library for image insertion
 
 ctk.set_appearance_mode("light")
