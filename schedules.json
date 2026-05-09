@@ -3,12 +3,6 @@
         {
             "Title": "Advanced Computer Programming",
             "Day": "Monday",
-            "Time": "10 : 00",
-            "Room": "LAB3"
-        },
-        {
-            "Title": "Advanced Computer Programming",
-            "Day": "Wednesday",
             "Time": "09 : 00",
             "Room": "402"
         }
