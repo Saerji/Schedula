@@ -26,3 +26,7 @@ Moreover, the system uses several python programming concepts such as control fl
 # 👤 Author
 
 I am Sergie Alexis S. Maldonado, an aspiring programmer curretly taking Bachelor of Science in Information Technology at Batangas State University - TNEU . I made this system since I, myself struggles in accessing my schedules in the school portals especially where internet is scarce and also a lazy one to make templates to manually edit my schedules at editing softwares.
+
+# 📝 Notes
+➣ Adding a database (just to learn)  
+➣ Optimization of UI and adding more features (if possible)
