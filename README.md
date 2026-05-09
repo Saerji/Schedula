@@ -1,3 +1,3 @@
-# ![alt text](image.png) Schedula
+# ![alt text](logo_white.png) Schedula
 
 schedula
