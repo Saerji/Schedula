@@ -1,3 +1,3 @@
-<img src="logo_white.png" width="50%"> Schedula
+<img src="logo_white.png" width="25%"> Schedula
 
 schedulas
